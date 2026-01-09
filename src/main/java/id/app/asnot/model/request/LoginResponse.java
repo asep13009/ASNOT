@@ -1,6 +1,5 @@
 package id.app.asnot.model.request;
-
-import id.app.asnot.model.entity.User;
+ 
 import id.app.asnot.model.response.UserRequest;
 import lombok.Data;
 

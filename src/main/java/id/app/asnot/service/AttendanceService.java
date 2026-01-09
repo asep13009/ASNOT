@@ -1,6 +1,5 @@
 package id.app.asnot.service;
-
-import com.fasterxml.jackson.databind.ObjectMapper;
+ 
 import id.app.asnot.model.entity.Attendance;
 import id.app.asnot.model.entity.Status;
 import id.app.asnot.model.entity.User;
@@ -11,14 +10,11 @@ import org.modelmapper.ModelMapper;
 import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Service;
 import org.springframework.web.server.ResponseStatusException;
-
-import javax.xml.crypto.Data;
 import java.time.LocalDate;
 import java.time.LocalDateTime;
 import java.time.LocalTime;
 import java.time.format.DateTimeFormatter;
-import java.util.List;
-import java.util.Map;
+import java.util.List; 
 import java.util.Optional;
 import java.util.stream.Collectors;
 
@@ -37,7 +33,7 @@ public class AttendanceService {
         this.userRepository = userRepository;
     }
 
-    public ResponseEntity<?> checkIn(Long userId, String photoUrl, Double latitude, Double longitude) throws ResponseStatusException {
+    public ResponseEntity<?> checkIn(Long userId, byte[] photoByte, Double latitude, Double longitude) throws ResponseStatusException {
 
         User user = userRepository.findById(userId).orElse(null);
         if (user == null) {
@@ -56,7 +52,7 @@ public class AttendanceService {
         Attendance attendance = new Attendance();
         attendance.setCheckIn(now);
         attendance.setUser(user);
-        attendance.setPhotoUrl_in(photoUrl);
+        attendance.setPhoto_in(photoByte);
         attendance.setLatitude_in(latitude);
         attendance.setLongitude_in(longitude);
         attendance.setStatus(status);
@@ -66,7 +62,7 @@ public class AttendanceService {
     }
 
     // Method untuk check-out
-    public  ResponseEntity<?>  checkOut(Long userId, String photoUrl, Double latitude, Double longitude) {
+    public  ResponseEntity<?>  checkOut(Long userId, byte[] photoByte, Double latitude, Double longitude) {
         // Validasi: Pastikan user ada
         User user = userRepository.findById(userId)
                 .orElseThrow(() -> new RuntimeException("User not found"));
@@ -83,7 +79,7 @@ public class AttendanceService {
         attendance.setCheckOut(LocalDateTime.now());
         attendance.setLatitude_out(latitude);
         attendance.setLongitude_out(longitude);
-        attendance.setPhotoUrl_out(photoUrl);
+        attendance.setPhoto_out(photoByte);
 
         // Simpan perubahan
         attendanceRepository.save(attendance);

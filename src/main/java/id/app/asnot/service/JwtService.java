@@ -1,9 +1,6 @@
 package id.app.asnot.service;
-
-import id.app.asnot.model.entity.User;
-import id.app.asnot.repository.UserRepository;
-import io.jsonwebtoken.*;
-import org.springframework.beans.factory.annotation.Autowired;
+  
+import io.jsonwebtoken.*; 
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Service;
 
@@ -16,9 +13,7 @@ public class JwtService {
 
     @Value("${jwt.expiration}")
     private long expiration;
-
-    @Autowired
-    private UserRepository userRepository;
+ 
 
     public String generateToken(String username, String role, Long userId) {
         return Jwts.builder()

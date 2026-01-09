@@ -20,7 +20,7 @@ public class Attendance {
     private Double longitude_in;
     private Double latitude_out;
     private Double longitude_out;
-    private String photoUrl_in;
-    private String photoUrl_out;
+    private byte[] photo_in;
+    private byte[] photo_out;
     private Status status;
 }

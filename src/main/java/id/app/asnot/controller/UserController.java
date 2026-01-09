@@ -1,8 +1,6 @@
 package id.app.asnot.controller;
-
-import id.app.asnot.model.entity.User;
-import id.app.asnot.model.request.UserResponse;
-import id.app.asnot.model.response.UserRequest;
+ 
+import id.app.asnot.model.request.UserResponse; 
 import id.app.asnot.service.UserService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;

@@ -4,6 +4,7 @@ import id.app.asnot.config.BearerTokenUtil;
 import id.app.asnot.service.AttendanceService;
 import id.app.asnot.service.JwtService;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.multipart.MultipartFile;
@@ -14,6 +15,16 @@ import java.util.Base64;
 @RestController
 @RequestMapping("/api/attendance")
 public class AttendanceController {
+
+    @Value("${office.lat}")
+    private double officeLat;
+    @Value("${office.lon}")
+    private double officeLon;
+    @Value("${office.radius}")
+    private double radius;
+    @Value("${EARTH_RADIUS}")
+    private double EARTH_RADIUS ;
+
     @Autowired
     private AttendanceService attendanceService;
 
@@ -30,28 +41,30 @@ public class AttendanceController {
         System.out.println("photo >>"+photo.getOriginalFilename());
         byte[] fileBytes = photo.getBytes();
 
-        // 2. Encode the byte array to Base64
-        String base64EncodedString = Base64.getEncoder().encodeToString(fileBytes);
+        // // 2. Encode the byte array to Base64
+        // String IMAGE_BASE64 = Base64.getEncoder().encodeToString(fileBytes);
         Long userId = jwtService.extractUserId(BearerTokenUtil.getBearerTokenHeader());
         if (!isWithinRadius(latitude, longitude)) {
             return ResponseEntity.badRequest().body("Lokasi di luar area absensi");
-        }
-        String photoUrl = savePhoto(photo);
-        return attendanceService.checkIn(userId,  photoUrl, latitude, longitude);
+        } 
+        return attendanceService.checkIn(userId,  fileBytes, latitude, longitude);
     }
 
     private boolean isWithinRadius(double lat, double lon) {
-        // Implementasi Haversine formula
-        double officeLat = 37.7749; // Contoh koordinat kantor
-        double officeLon = -122.4194;
-        // Hitung jarak, return true jika < radius
-        return true; // Placeholder
-    }
+     
+        double dLat = Math.toRadians(lat - officeLat);
+        double dLon = Math.toRadians(lon - officeLon);
 
-    private String savePhoto(MultipartFile photo) {
-        // Simpan ke file system atau cloud, return URL
-        return "path/to/photo.jpg";
+        double a = Math.sin(dLat / 2) * Math.sin(dLat / 2) +
+                   Math.cos(Math.toRadians(officeLat)) * Math.cos(Math.toRadians(lat)) *
+                   Math.sin(dLon / 2) * Math.sin(dLon / 2);
+        
+        double c = 2 * Math.atan2(Math.sqrt(a), Math.sqrt(1 - a));
+        double distance = EARTH_RADIUS * c;
+
+        return distance <= radius; 
     }
+ 
 
     @CrossOrigin("*")
     @PostMapping("/checkout")
@@ -63,13 +76,14 @@ public class AttendanceController {
         System.out.println("photo >>"+photo.getOriginalFilename());
         byte[] fileBytes = photo.getBytes();
 
-//        String base64EncodedString = Base64.getEncoder().encodeToString(fileBytes);
+    //    String IMAGE_BASE64 = Base64.getEncoder().encodeToString(fileBytes);
         Long userId = jwtService.extractUserId(BearerTokenUtil.getBearerTokenHeader());
         if (!isWithinRadius(latitude, longitude)) {
+            System.out.println("on this" );
             return ResponseEntity.badRequest().body("Lokasi di luar area absensi");
         }
-        String photoUrl = savePhoto(photo);
-        return attendanceService.checkOut(userId,  photoUrl, latitude, longitude);
+        System.out.println("on this ok " ); 
+        return attendanceService.checkOut(userId,  fileBytes, latitude, longitude);
     }
 
 
