@@ -1,5 +1,6 @@
 package id.app.asnot.service;
 
+import id.app.asnot.model.entity.Role;
 import id.app.asnot.model.entity.User;
 import id.app.asnot.model.request.UserResponse;
 import id.app.asnot.repository.UserRepository;
@@ -22,6 +23,15 @@ public class UserService {
     public List<UserResponse> findAll() {
         List<UserResponse> users = new ArrayList<UserResponse>();
         List<User> usersAll = userRepository.findAll();
+        ModelMapper modelMapper = new ModelMapper();
+        usersAll.forEach(user -> {users.add(modelMapper.map(user, UserResponse.class));});
+        return  users;
+
+    }
+
+    public List<UserResponse> userOnly() {
+        List<UserResponse> users = new ArrayList<UserResponse>();
+        List<User> usersAll = userRepository.findAllByRole(Role.USER);
         ModelMapper modelMapper = new ModelMapper();
         usersAll.forEach(user -> {users.add(modelMapper.map(user, UserResponse.class));});
         return  users;

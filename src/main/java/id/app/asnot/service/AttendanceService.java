@@ -106,9 +106,6 @@ public class AttendanceService {
         LocalDate localDate = LocalDate.parse(date, formatter);
         int month = localDate.getMonthValue();
         int year = localDate.getYear();
-        System.out.println(localDate);
-        System.out.println(month);
-        System.out.println(year);
         List<Attendance> attendances = attendanceRepository.findByUserIdAndYearAndMonth(user, year,month);
         ModelMapper modelMapper = new ModelMapper();
         List<AttendanceResponse> attendanceResponse = attendances.stream()

@@ -19,6 +19,13 @@ public class UserController {
     public List<UserResponse> getUser() {
       return  userService.findAll();
     }
+
+    @CrossOrigin("*")
+    @GetMapping("/only-user")
+    public List<UserResponse> getUserOnly() {
+        return  userService.userOnly();
+    }
+
     @CrossOrigin("*")
     @PostMapping("/set-access")
     public ResponseEntity<?> userAccess(@RequestBody UserResponse userRequest) {
